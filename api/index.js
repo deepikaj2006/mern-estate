@@ -7,6 +7,7 @@ import mongoose from "mongoose";
 import userRouter from "./routes/user.route.js";
 import authRouter from "./routes/auth.route.js";
 dotenv.config({ path: path.resolve("./api/.env") });
+import cookieParser from 'cookie-parser';
 //dotenv.config();
 console.log("ENV TEST:", process.env.CLOUDINARY_CLOUD_NAME);
 mongoose
@@ -20,6 +21,7 @@ mongoose
 
 const app = express();
 app.use(express.json());
+app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
 app.listen(3000, () => {
