@@ -1,43 +1,70 @@
 import dotenv from "dotenv";
 dotenv.config();
-import path from "path";
 
 import express from "express";
 import mongoose from "mongoose";
+import cookieParser from "cookie-parser";
+import cors from "cors";
+import path from "path";
+
 import userRouter from "./routes/user.route.js";
 import authRouter from "./routes/auth.route.js";
-dotenv.config({ path: path.resolve("./api/.env") });
-import cookieParser from 'cookie-parser';
-//dotenv.config();
-console.log("ENV TEST:", process.env.CLOUDINARY_CLOUD_NAME);
-mongoose
-  .connect(process.env.MONGO)
-  .then(() => {
-    console.log("Connected to mongodb");
-  })
-  .catch((err) => {
-    console.log(err);
-  });
 
+// ======================
+// APP CONFIG
+// ======================
 const app = express();
+
+// ======================
+// MIDDLEWARE (ORDER MATTERS)
+// ======================
 app.use(express.json());
-app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
-app.listen(3000, () => {
-  console.log("Server is running on port 3000!!");
-});
+app.use(
+  cors({
+    origin: "http://localhost:5173", // frontend
+    credentials: true, // allow cookies
+  })
+);
 
-app.use("/api/user", userRouter);
+// ======================
+// ROUTES
+// ======================
 app.use("/api/auth", authRouter);
-//app.use("/api/user", userRoutes);
+app.use("/api/user", userRouter);
 
+// ======================
+// ERROR HANDLER
+// ======================
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
   const message = err.message || "Internal Server Error";
+
   return res.status(statusCode).json({
     success: false,
     statusCode,
     message,
   });
+});
+
+// ======================
+// DATABASE
+// ======================
+mongoose
+  .connect(process.env.MONGO)
+  .then(() => {
+    console.log("✅ MongoDB connected");
+  })
+  .catch((err) => {
+    console.error("❌ MongoDB error:", err);
+  });
+
+// ======================
+// SERVER
+// ======================
+const PORT = 3000;
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
 });
