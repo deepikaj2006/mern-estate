@@ -9,6 +9,7 @@ import path from "path";
 
 import userRouter from "./routes/user.route.js";
 import authRouter from "./routes/auth.route.js";
+import listingRouter from "./routes/listing.route.js";
 
 // ======================
 // APP CONFIG
@@ -34,6 +35,7 @@ app.use(
 // ======================
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
+app.use("/api/listing", listingRouter);
 
 // ======================
 // ERROR HANDLER
