@@ -1,17 +1,23 @@
 import express from "express";
-import { deleteUser, test, updateUser } from "../controllers/user.controller.js";
-import upload from "../utils/multer.js";
+import {
+  deleteUser,
+  test,
+  updateUser,
+} from "../controllers/user.controller.js";
+import { uploadAvatar } from "../utils/multer.js";
 import { verifyToken } from "../utils/verifyUser.js";
 
 const router = express.Router();
 
 router.get("/test", test);
-router.post("/update/:id",verifyToken,updateUser)
+router.post("/update/:id", verifyToken, updateUser);
 router.delete("/delete/:id", verifyToken, deleteUser);
 
-// ✅ FIXED Cloudinary upload route (with proper Multer error handling)
-router.post("/upload-avatar", (req, res) => {
-  upload.single("avatar")(req, res, (err) => {
+/* ===============================
+   Upload avatar (Cloudinary)
+   =============================== */
+router.post("/upload-avatar", verifyToken, (req, res) => {
+  uploadAvatar.single("avatar")(req, res, (err) => {
     if (err) {
       console.error("MULTER ERROR:", err);
       return res.status(400).json({
@@ -27,15 +33,11 @@ router.post("/upload-avatar", (req, res) => {
       });
     }
 
-    console.log("FILE:", req.file);
-
     return res.status(200).json({
       success: true,
       avatar: req.file.path, // Cloudinary URL
     });
   });
 });
-
-
 
 export default router;
