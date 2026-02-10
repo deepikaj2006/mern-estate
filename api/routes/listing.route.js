@@ -9,11 +9,10 @@ import { uploadListingImages } from "../utils/multer.js";
 const router = express.Router();
 
 /* ===============================
-   Upload listing images (SAFE)
+   Upload listing images (FIXED)
    =============================== */
 router.post(
   "/upload-images",
-  verifyToken,
   (req, res, next) => {
     uploadListingImages.array("images", 6)(req, res, (err) => {
       if (err) {
@@ -30,7 +29,7 @@ router.post(
 );
 
 /* ===============================
-   Create listing
+   Create listing (PROTECTED)
    =============================== */
 router.post("/create", verifyToken, createListing);
 
