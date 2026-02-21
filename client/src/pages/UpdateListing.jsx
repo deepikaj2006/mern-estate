@@ -335,7 +335,7 @@ export default function CreateListing() {
             disabled={loading || uploading}
             className="p-3 bg-slate-700 text-white rounded-lg"
           >
-            {loading ? "Creating..." : "Update listing"}
+            {loading ? "Updating..." : "Update listing"}
           </button>
 
           {error && <p className="text-red-700">{error}</p>}
